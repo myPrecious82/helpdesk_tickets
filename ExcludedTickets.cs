@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using helpdesk_tickets.Models;
 
@@ -11,10 +12,14 @@ namespace helpdesk_tickets
 
         public ExcludedTickets()
         {
-            const string path = "C:\\LRS Docs\\mine\\Projects\\helpdesk_tickets\\ticketsToExclude.txt";
+            var appSettings = ConfigurationManager.AppSettings;
+
+            var path = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName), @"..\..\"));
+            var templatePath = $"{path}ticketsToExclude.txt";
+
             Tickets = new List<Ticket>();
 
-            var tixToExclude = File.ReadAllText(path).Split(',');
+            var tixToExclude = File.ReadAllText(templatePath).Split(',');
 
             foreach (var id in tixToExclude)
             {
