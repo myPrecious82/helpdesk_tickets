@@ -1,0 +1,7 @@
+Hello. OITS is closing this ticket, as it appears to have already been resolved. If this is not correct, please contact the help desk to create a new ticket. Thank you!
+
+Hello. OITS has completed and closed your ticket. Please verify and follow-up if there are any issues. Thank you!
+
+Hello. This requested person merge resulted in results that involve expunged records. We'll need approval and direction on how to proceed from Nora and Deanna. Thank you!
+
+Hello. This requested person merge contains a DR case error. We'll need to know what data to carry over. Thank you!
