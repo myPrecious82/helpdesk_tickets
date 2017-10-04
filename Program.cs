@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using helpdesk_tickets.Models;
 using System.Net.Mail;
+using System.Configuration;
 
 namespace helpdesk_tickets
 {
@@ -12,7 +13,12 @@ namespace helpdesk_tickets
     {
         public static void Main()
         {
-            const string dbConnection = "Server=CFCO06SQL2K12;Database=helpdesk;Trusted_Connection=True;";
+            var appSettings = ConfigurationManager.AppSettings;
+
+            var dbConnection = appSettings["ConnectionString"];
+            var ticketAreas = appSettings["TicketAreas"];
+            var assigneeUserName = appSettings["AssigneeUserName"];
+            var responsibilityGroups = appSettings["ResponsibilityGroups"];
 
             var myDS = new DataSet();
             var myConn = new SqlConnection(dbConnection);
@@ -26,7 +32,7 @@ namespace helpdesk_tickets
                 "INNER JOIN Priority P ON T.PriorityId = P.PriorityId " +
                 "INNER JOIN TicketDescription TD2 ON T.TicketId = TD2.TicketId " +
                 "INNER JOIN ResponsibilityGroup RG ON T.ResponsibilityGroupId = RG.ResponsibilityGroupId " +
-                "WHERE T.TicketStatusId <> 3 AND AssigneeUserName = 'DCFS\\CAA6377' " +
+                "WHERE T.TicketStatusId <> 3 AND AssigneeUserName = " + assigneeUserName + " " +
                 "ORDER BY Status, Priority, Area, Detail, TicketId";
 
             var myCmd = new SqlCommand(myQuery, myConn);
@@ -45,7 +51,7 @@ namespace helpdesk_tickets
                 "INNER JOIN Priority P ON T.PriorityId = P.PriorityId " +
                 "INNER JOIN TicketDescription TD2 ON T.TicketId = TD2.TicketId " +
                 "INNER JOIN ResponsibilityGroup RG ON T.ResponsibilityGroupId = RG.ResponsibilityGroupId " +
-                "WHERE T.TicketStatusId = 2 AND TA.Name IN('Intake Evaluation', 'Investigation', 'Person') AND RG.Name IN('SACWIS Data','SACWIS Dev') AND AssigneeUserName IS NULL " +
+                "WHERE T.TicketStatusId = 2 AND TA.Name IN(" + ticketAreas + ") AND RG.Name IN(" + responsibilityGroups + ") AND AssigneeUserName IS NULL " +
                 "ORDER BY Status, Priority, Area, Detail, TicketId";
 
             myCmd = new SqlCommand(myQuery, myConn);
@@ -108,10 +114,11 @@ namespace helpdesk_tickets
                 openTix.Add(ticket);
             }
 
-            const string emailSmtpHost = "SMTPR.illinois.gov";
-            const string emailSendTo = "Alexis.Atchison@illinois.gov";
-            const string emailSendFrom = "alexis.atchison@illinois.gov";
-            const string emailSendFromDisplay = "Atchison, Alexis";
+            var emailSmtpHost = appSettings["EmailSmtpHost"];
+            var emailSendTo = appSettings["EmailSendTo"];
+            var emailSendFrom = appSettings["EmailSendFrom"];
+            var emailSendFromDisplay = appSettings["EmailSendFromDisplay"];
+
             var emailSubject = $"PDR Scripts for {DateTime.Now.Date:MM.dd.yyyy}";
             var crlf = "<br />";
             var strPending = $"<strong>Pending Tickets</strong>{crlf}";
