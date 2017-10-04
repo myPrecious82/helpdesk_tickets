@@ -17,7 +17,7 @@ namespace helpdesk_tickets
 
             var dbConnection = appSettings["ConnectionString"];
             var ticketAreas = appSettings["TicketAreas"];
-            var assigneeUserName = appSettings["AssigneeUserName"];
+            var assigneeUserName = appSettings["UserName"];
             var responsibilityGroups = appSettings["ResponsibilityGroups"];
 
             var myDS = new DataSet();
@@ -32,7 +32,7 @@ namespace helpdesk_tickets
                 "INNER JOIN Priority P ON T.PriorityId = P.PriorityId " +
                 "INNER JOIN TicketDescription TD2 ON T.TicketId = TD2.TicketId " +
                 "INNER JOIN ResponsibilityGroup RG ON T.ResponsibilityGroupId = RG.ResponsibilityGroupId " +
-                "WHERE T.TicketStatusId <> 3 AND AssigneeUserName = " + assigneeUserName + " " +
+                "WHERE T.TicketStatusId <> 3 AND AssigneeUserName = '" + assigneeUserName + "' " +
                 "ORDER BY Status, Priority, Area, Detail, TicketId";
 
             var myCmd = new SqlCommand(myQuery, myConn);
